@@ -1,0 +1,140 @@
+/*************************************************************************/
+/** Layout and Structure **/
+/*************************************************************************/
+
+html, body {
+    height: 100%;
+}
+
+.full-height {
+    height: 100%;
+}
+
+/*****************************************************/
+/** Top Navigation Structure **/
+/*****************************************************/
+
+/* Overwrite Navigation Defaults */
+.navbar-nav {
+    float: right;
+}
+
+.collapsing, .collapse.in {
+    float: left;
+}
+
+/*****************************************************/
+/** Left Navigation Structure **/
+/*****************************************************/
+
+.left-nav {
+    height: 100%;
+}
+.segment-nav {
+    position: fixed;
+    width: 100%;
+    left: 0;
+    bottom: 0;
+    height: 30px;
+    background-color: darkslategray;
+}
+.segment-nav ul {
+    padding: 0;
+}
+.segment-nav li {
+    display: inline-block;
+    width: 45%;
+    text-align: center;
+    font-size: 16px;
+    padding: 5px;
+}
+.segment-nav li a {
+    color: white;
+}
+.segment-nav li:first-child {
+    border-right: 1px solid white; 
+}
+/*****************************************************/
+/** Main Content Structure **/
+/*****************************************************/
+
+.clearnav {
+    margin-top: 50px;
+}
+
+.main-content {
+    height: 100%;
+}
+
+
+
+
+
+
+
+
+/*************************************************************************/
+/** Styles and Colors **/
+/*************************************************************************/
+
+/*****************************************************/
+/** Top Navigation Style **/
+/*****************************************************/
+.top-nav-active {
+    
+}
+
+
+/*****************************************************/
+/** Left Navigation Style **/
+/*****************************************************/
+.left-nav-col {
+    background-color: #ededed;
+    height: 100%;
+}
+.left-nav {
+    margin-right: -15px;
+    margin-left: -15px;
+}
+/*
+.left-nav li a:focus {
+    background-color: transparent;
+    color: #337ab7;
+}
+*/
+.left-nav li a:hover {
+    background-color: darkcyan;
+    color: white;
+}
+.left-nav li a:active {
+    background-color: #1e9595;
+    color: black;
+}
+.left-nav-active {
+    background-color: #c5e0e0;
+    color: black;
+}
+
+/*****************************************************/
+/** Main Content Style **/
+/*****************************************************/
+
+.main-content {
+    background-color: #fcfcfc;
+}
+
+
+/*************************************************************************/
+/** Media Queries **/
+/*************************************************************************/
+
+@media (max-width:768px) {
+    .left-nav-col {
+        display: none;
+    }
+}
+@media (min-width:768px) {
+    .segment-nav {
+        display: none;
+    }
+}
