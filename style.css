@@ -10,6 +10,13 @@ html, body {
     height: 100%;
 }
 
+.right {
+    float: right;
+}
+.left {
+    float: left;
+}
+
 /*****************************************************/
 /** Top Navigation Structure **/
 /*****************************************************/
@@ -123,6 +130,44 @@ html, body {
     background-color: #fcfcfc;
 }
 
+/*****************************************************/
+/** Waterfall Navigation Style **/
+/*****************************************************/
+
+.waterfall-large {
+    margin-top: 50px;
+}
+.waterfall-large-project p {
+    color: #183333;
+    padding: 5px;
+}
+.waterfall-large-project:hover {
+    opacity: 0.8;
+    cursor: pointer;
+}
+
+/* D3 Waterfall Visualization Styles */
+.grid .tick {
+    stroke: lightgrey;
+    opacity: 0.3;
+    shape-rendering: crispEdges;
+}
+.grid path {
+      stroke-width: 0;
+}
+
+/*****************************************************/
+/** Add Project Modal **/
+/*****************************************************/
+
+.modal-textbox {
+    width: 50%;
+    margin-bottom: 20px;
+}
+.modal-date {
+    width: 25%;
+    margin-bottom: 20px;
+}
 
 /*************************************************************************/
 /** Media Queries **/

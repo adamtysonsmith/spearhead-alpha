@@ -8,60 +8,92 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-        <!-- Top Navigation -->
-        <nav class="navbar navbar-default navbar-fixed-top">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                   <a href="#" class="navbar-brand">Spearhead</a>
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
+    <!-- Top Navigation -->
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+               <a href="#" class="navbar-brand">Spearhead</a>
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div id="navbar" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="#">About Spearhead</a></li>
+                    <li><a href="#">Account</a></li>
+                    <li><a href="#">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Container -->
+    <div class="container-fluid clearnav full-height">
+       <div class="row full-height">
+            <!-- Left Navigation -->
+            <div class="col-sm-3 col-md-2 left-nav-col">
+                <ul class="nav left-nav">
+                    <li><a href="index.html">Dashboard</a></li>
+                    <li class="left-nav-active"><a href="#">Projects</a></li>
+                    <li><a href="#">Reports</a></li>
+                </ul>
+            </div>
+            <!-- Main Content Area -->
+            <div class="col-sm-9 col-md-10 main-content">
+                <h1>Spearhead Projects</h1>
+                <button class="btn btn-warning" data-toggle="modal" data-target="#newProjectModal">+ Add Project</button>
+                <div class="waterfall-large">
+                    <!-- jQuery Generated Code Here -->
                 </div>
-                <div id="navbar" class="collapse navbar-collapse">
-                    <ul class="nav navbar-nav">
-                        <li><a href="#">About Spearhead</a></li>
-                        <li><a href="#">Account</a></li>
-                        <li><a href="#">Logout</a></li>
-                    </ul>
+                <div class="waterfall-large-svg">
+                    <!-- D3 Generated Code Here -->
                 </div>
             </div>
-        </nav>
+       </div> <!-- End Row -->
         
-        <!-- Page Container -->
-        <div class="container-fluid clearnav full-height">
-           <div class="row full-height">
-                <!-- Left Navigation -->
-                <div class="col-sm-3 col-md-2 left-nav-col">
-                    <ul class="nav left-nav">
-                        <li><a href="index.html">Dashboard</a></li>
-                        <li class="left-nav-active"><a href="#">Projects</a></li>
-                        <li><a href="#">Reports</a></li>
-                    </ul>
-                </div>
-
-                <!-- Main Content Area -->
-                <div class="col-sm-9 col-md-10 main-content">
-                    <h1>Spearhead Projects</h1>
-                </div>
-
-           </div> <!-- End Row -->
+        <!-- Mobile Secondary Nav -->
         <div class="segment-nav">
             <ul>
                 <li><a href="#">Dashboard</a></li>
                 <li><a href="#">Projects</a></li>
             </ul>
         </div>
-        </div> <!-- End Page Container -->
-
+    </div> <!-- End Page Container -->
     
+    <!-- New Project Modal -->
+    <div class="modal fade" id="newProjectModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Create New Project</h4>
+                </div>
+                <div class="modal-body">
+                    <label for="project-name">Project Name</label><br>
+                    <input class="modal-textbox" id="project-name" type="text">
+                    <br>
+                    <label for="project-name">Estimated Start Date</label><br>
+                    <input class="modal-date" id="project-start-date" type="date">
+                    <br>
+                    <label for="project-name">Estimated Completion Date</label><br>
+                    <input class="modal-date" id="project-due-date" type="date">
+                </div>
+                <div class="modal-footer">
+                    <button id="cancel-new-project" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button id="save-new-project" type="button" class="btn btn-primary" data-dismiss="modal">Save Project</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/lodash/3.9.3/lodash.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-    <script src="left-nav.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
     <script src="projects.js"></script>
 </body>
 </html>
