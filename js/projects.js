@@ -6,15 +6,15 @@ $(document).ready(function() {
     // Hide the project detail view (static prototype code)
     $('.project-detail-view').hide();
     
-    // Build D3 Visualization (Code Below)
+    // Project Main View: Build D3 Visualization (Code Below)
     buildWaterfallNav(testData);
     
-    // 'Add Project'
-    // Instatiate the datepickers
+    // Project Main View:  'Add Project'
+        // Instatiate the datepickers
     $('#project-start-date').datepicker();
     $('#project-due-date').datepicker();
     
-    // Form Event Handlers
+        // Form Event Handlers
     $('#save-new-project').click(function() {
         var name = $('#project-name').val();
         var startDate = $('#project-start-date').val();
@@ -38,7 +38,7 @@ $(document).ready(function() {
         console.log('New Project Canceled =(');
     });
     
-    // Waterfall Navigation Handler
+    // Project Main View: Waterfall Navigation Handler
     $('.project-bar').click(function() {
         // Get the data index
         var dataIndex = $(this).attr('data-index');
@@ -49,6 +49,19 @@ $(document).ready(function() {
         // Re-pave with Project Detail View based on data index
         // Show the project detail view (static prototype code)
         $('.project-detail-view').show();
+    });
+    
+    // Project Detail View: Task Event Handler
+    $('.custom-checkbox').on('click', function() {
+        
+        if ($(this).hasClass('checked')) {
+            $(this).removeClass('checked');
+            $(this).next().removeClass('strike-through');
+        } else {
+            $(this).addClass('checked');
+            $(this).next().addClass('strike-through');
+        }
+        
     });
     
 }); // End Ready
