@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta id="viewport" name="viewport" content ="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Dashboard | Spearhead Project Management Prototype</title>
+    <title>Projects | Spearhead Project Management Prototype</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link href="jquery-datepicker/jquery-ui.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <!-- Top Navigation -->
@@ -43,13 +44,67 @@
             </div>
             <!-- Main Content Area -->
             <div class="col-sm-9 col-md-10 main-content">
-                <h1>Spearhead Projects</h1>
-                <button class="btn btn-warning" data-toggle="modal" data-target="#newProjectModal">+ Add Project</button>
                 <div class="waterfall-large">
-                    <!-- jQuery Generated Code Here -->
-                </div>
-                <div class="waterfall-large-svg">
+                    <div class="waterfall-title">
+                        <h1>Spearhead Projects</h1>
+                        <button class="btn btn-warning" data-toggle="modal" data-target="#newProjectModal">+ Add Project</button>
+                    </div>
                     <!-- D3 Generated Code Here -->
+                </div>
+                <div class="project-detail-view">
+                    <h2>Project Details View</h2>
+                    <button class="btn btn-warning" data-toggle="modal" data-target="#newPhaseModal">+ Add Phase</button>
+                    <!-- Handlebars Templating Here -->
+                    <div class="pipeline-container">
+                        <svg class="project-pipeline" height="100" width="1000">
+                            <polygon points="750,0 900,0 920,30 900,60 750,60" style="fill: #00bb73; stroke: white; stroke-width: 2" /> <!-- Fifth -->
+                            <polygon points="600,0 750,0 770,30 750,60 600,60" style="fill: #00b88f; stroke: white; stroke-width: 2" /> <!-- Fifth -->
+                            <polygon points="450,0 600,0 620,30 600,60 450,60" style="fill: #00b3a5; stroke: white; stroke-width: 2" /> <!-- Fourth -->
+                            <polygon points="300,0 450,0 470,30 450,60 300,60" style="fill: #00acb4; stroke: white; stroke-width: 2" /> <!-- Third -->
+                            <polygon points="150,0 300,0 320,30 300,60 150,60" style="fill: #00a8bf; stroke: white; stroke-width: 2" /> <!-- Second -->
+                            <polygon points="0,0   150,0 170,30 150,60 0,60"   style="fill: #00a1c2; stroke: white; stroke-width: 2" /> <!-- First -->
+                        </svg>
+                    </div>
+                    <div class="container-fluid full-height">
+                        <div class="tasks-container">
+                            <div class="col-xs-12 col-md-6">
+                                <h3 class="tasks-title">Tasks</h3><button class="add-task btn btn-warning">+ Add Task</button>
+                                <!-- These will be added via jQuery -->
+                                <div class="task-group">
+                                    <div class="task">
+                                        <input class="checkbox" id="check1" type="checkbox" name="check1" value="check1">
+                                        <label for="check1"></label>
+                                        <span class="task-name">This is a task! Check me off!</span>
+                                    </div>
+                                    <div class="task">
+                                        <input class="checkbox" id="check2" type="checkbox" name="check2" value="check2">
+                                        <label for="check2"></label>
+                                        <span class="task-name">This is a task! Check me off!</span>
+                                    </div>
+                                    <div class="task">
+                                        <input class="checkbox" id="check3" type="checkbox" name="check3" value="check3">
+                                        <label for="check3"></label>
+                                        <span class="task-name">This is a task! Check me off!</span>
+                                    </div>
+                                    <div class="task">
+                                        <input class="checkbox" id="check4" type="checkbox" name="check4" value="check4">
+                                        <label for="check4"></label>
+                                        <span class="task-name">This is a task! Check me off!</span>
+                                    </div>
+                                    <div class="task">
+                                        <input class="checkbox" id="check5" type="checkbox" name="check6" value="check5">
+                                        <label for="check5"></label>
+                                        <span class="task-name">This is a task! Check me off!</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="notes-container">
+                            <div class="col-xs-12 col-md-6">
+                                <h3 class="notes-title">Notes</h3><button class="add-note btn btn-warning">+ Add Note</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
        </div> <!-- End Row -->
@@ -76,10 +131,10 @@
                     <input class="modal-textbox" id="project-name" type="text">
                     <br>
                     <label for="project-name">Estimated Start Date</label><br>
-                    <input class="modal-date" id="project-start-date" type="date">
+                    <input class="modal-date" id="project-start-date" type="text">
                     <br>
                     <label for="project-name">Estimated Completion Date</label><br>
-                    <input class="modal-date" id="project-due-date" type="date">
+                    <input class="modal-date" id="project-due-date" type="text">
                 </div>
                 <div class="modal-footer">
                     <button id="cancel-new-project" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -88,12 +143,22 @@
             </div>
         </div>
     </div>
-
+    
+    <!-- Project Detail View Template -->
+    <script id="project-detail-view-template" type="text/x-handlebars-template">
+        
+    </script>
+    
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/lodash/3.9.3/lodash.min.js"></script>
+    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="jquery-datepicker/jquery-ui.min.js"></script>
+    
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
-    <script src="projects.js"></script>
+    
+    <script src="js/classes.js"></script>
+    <script src="js/projects.js"></script>
 </body>
 </html>
