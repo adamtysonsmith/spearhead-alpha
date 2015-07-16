@@ -263,11 +263,11 @@ var initPipeline = function() {
                 if (i === 0) {
                     return points.join(' ');
                 } else {
-                    points[0][0] += 150;
-                    points[1][0] += 150;
-                    points[2][0] += 150;
-                    points[3][0] += 150;
-                    points[4][0] += 150;
+                    points[0][0] = points[0][0] + i * 150;
+                    points[1][0] = points[1][0] + i * 150;
+                    points[2][0] = points[2][0] + i * 150;
+                    points[3][0] = points[3][0] + i * 150;
+                    points[4][0] = points[4][0] + i * 150;
                 }
                 
                 return points.join(' ');
@@ -286,7 +286,7 @@ var initPipeline = function() {
                     if (i === 0) {
                         return x;
                     } else {
-                        x += 170;
+                        x = x + (i * 150) + 20;
                     }
                     return x;
                 })
@@ -474,6 +474,38 @@ $(document).ready(function() {
     //////////////////////////////////////////
     // Project Detail View
     //////////////////////////////////////////
+    
+    // Project Detail View: Add Stage
+    $('body').on('click', '.add-stage-button', function() {
+        $('.add-stage-input').show().focus();
+    });
+    
+    $('body').on('keypress focusout', '.add-stage-input', function(e) {
+        var hash = location.hash.split('/');
+        var projectIndex = hash[0].slice(9);
+        var stageIndex = hash[1].slice(6);
+        var taskIndex = hash[2].slice(5);
+        
+        var name;
+        
+        if ((e.which === 13) || (e.type === 'focusout')) {
+            name = $(this).val();
+            // Reset the input field & Hide textarea
+            $(this).val('');
+            $(this).hide();
+            
+            // Then, if there is actually content we save it
+            if (name.length > 0) {
+                newStage = new Stage(name, [firstTask]);
+                allProjects[projectIndex].stages.push(newStage);
+                renderProjectTemplates(
+                    allProjects[projectIndex], 
+                    allProjects[projectIndex].stages[stageIndex],
+                    allProjects[projectIndex].stages[stageIndex].tasks[taskIndex]
+                );
+            }
+        }
+    });
     
     // Project Detail View: Task Checkbox
     $('body').on('click', '.custom-checkbox', function() {
