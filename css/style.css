@@ -159,9 +159,10 @@ html, body {
     border-right: 1px solid gray;
 }
 .tasks-title, .notes-title {
-    display: inline-block;   
+    display: inline-block;
+    margin-bottom: 30px;
 }
-.add-task, .add-note {
+.add-task-button, .add-note-button {
     display: inline-block;
     margin-top: -8px;
     margin-left: 30px;
@@ -169,6 +170,17 @@ html, body {
 .task-name {
     margin-left: 15px;
     font-size: 18px;
+}
+
+.note {
+    padding: 15px;
+    background-color: #f0f0f0;
+    margin-bottom: 10px;
+}
+
+.add-note-container, .add-task-container {
+    display: none;
+    margin-bottom: 30px;
 }
 
 /**********************************/
@@ -210,6 +222,12 @@ html, body {
 .task:nth-child(odd) {
     background-color: #edf6ff;
 }
+.task:nth-child(odd).active-task {
+    background-color: aquamarine;  
+}
+.active-task {
+    background-color: aquamarine;
+}
 
 .custom-checkbox:hover:before {
     border: 2px solid #098e42;
@@ -221,6 +239,9 @@ html, body {
 .border-right-gray {
     border-right: 1px solid gray;
 }
+
+
+
 /*****************************************************/
 /** Add Project Modal **/
 /*****************************************************/

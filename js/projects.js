@@ -1,72 +1,19 @@
 ///////////////////////////////////////////////
-// Projects: Inits and Event Handlers
+// Data initialization variables
 ///////////////////////////////////////////////
+var allProjects = [];
 
-$(document).ready(function() {
-    // Hide the project detail view (static prototype code)
-    $('.project-detail-view').hide();
-    
-    // Project Main View: Build D3 Visualization (Code Below)
-    buildWaterfallNav(testData);
-    
-    // Project Main View:  'Add Project'
-        // Instatiate the datepickers
-    $('#project-start-date').datepicker();
-    $('#project-due-date').datepicker();
-    
-        // Form Event Handlers
-    $('#save-new-project').click(function() {
-        var name = $('#project-name').val();
-        var startDate = $('#project-start-date').val();
-        var dueDate = $('#project-due-date').val();
-        
-        var newProject = new Project(name, startDate, dueDate);
-        testData.push(newProject);
-        
-        // Remove the current waterfall and build a new one
-        $('.waterfall-large-svg').html(buildWaterfallNav(testData));
-        
-        // Reset the input fields
-        $('#project-name').val('');
-        $('#project-start-date').val('');
-        $('#project-due-date').val('');
-        
-        console.log('New Project Saved!', name, startDate, dueDate);
-    });
-    
-    $('#cancel-new-project').click(function() {
-        console.log('New Project Canceled =(');
-    });
-    
-    // Project Main View: Waterfall Navigation Handler
-    $('.project-bar').click(function() {
-        // Get the data index
-        var dataIndex = $(this).attr('data-index');
-        
-        // Nuke the waterfall!
-        $('.waterfall-large').remove();
-        
-        // Re-pave with Project Detail View based on data index
-        // Show the project detail view (static prototype code)
-        $('.project-detail-view').show();
-    });
-    
-    // Project Detail View: Task Event Handler
-    $('.custom-checkbox').on('click', function() {
-        
-        if ($(this).hasClass('checked')) {
-            $(this).removeClass('checked');
-            $(this).next().removeClass('strike-through');
-        } else {
-            $(this).addClass('checked');
-            $(this).next().addClass('strike-through');
-        }
-        
-    });
-    
-}); // End Ready
+var firstNote = new Note('This is your first note!');
+var firstTask = new Task('This is your first task', [firstNote]);
+var stageOne = new Stage('Stage 1', [firstTask]);
+var defaultProject = new Project('Example Project','07/01/2015','07/30/2015', [stageOne]);
+
+allProjects.push(defaultProject);
 
 
+// Compile Handlebars Template
+var projectDetailsTemplate = $('#project-detail-view-template').text();
+var renderProjectDetailsTemplate = Handlebars.compile(projectDetailsTemplate);
 
 
 ///////////////////////////////////////////////
@@ -99,7 +46,7 @@ var sidePadding = 0;
 var topPadding = 0;
 
 // Create a selection for the svgContainer
-var svgContainer = d3.selectAll('.waterfall-large').append('svg')
+var svgContainer = d3.selectAll('#waterfall-large').append('svg')
     .attr('width', '100%')
     .attr('height', '100%')
     .attr('viewBox', '0 0 ' + width + ' ' + height)
@@ -111,10 +58,10 @@ var dateFormat = d3.time.format('%Y-%m-%d');
 var timeFormat = d3.time.format('%b %e, %Y');
 
 // Return minimum and maximum dates
-var min = d3.min(testData, function(d) { 
+var min = d3.min(allProjects, function(d) { 
     return dateFormat.parse(d.startDate);
 });
-var max = d3.max(testData, function(d) { 
+var max = d3.max(allProjects, function(d) { 
     return dateFormat.parse(d.dueDate);
 });
 
@@ -123,7 +70,7 @@ var timeScale = d3.time.scale().domain([min, max]).range([40, width - 40]);
 
 // Create a color scale for our bars
 var colorScale = d3.scale.linear()
-    .domain([0, testData.length])
+    .domain([0, allProjects.length])
     .range(['#1199BF', '#12BF25'])
     .interpolate(d3.interpolateHcl);
 
@@ -259,3 +206,148 @@ var buildWaterfallNav = function(data) {
     // @params: data, theGap, theTopPad, theSidePad, theBarHeight, theColorScale, width, height
     drawBars(data, 50, 0, 0, 40, colorScale, width, height);
 }
+
+
+
+
+
+
+///////////////////////////////////////////////
+// Projects Initialization and Event Handlers
+///////////////////////////////////////////////
+
+$(document).ready(function() {
+    // Reset the hash on refresh
+    location.hash = '#';
+    
+    $(window).on('hashchange', function(e) {
+        var hash = location.hash.substring(1);
+        console.log(hash);
+        // render the relevant template by passing in allProjects[hash]
+        if (hash >= 0 && hash !== '') {
+            console.log('Triggered Template');
+            return $('#project-detail-view').html(renderProjectDetailsTemplate(allProjects[hash]));
+            // Breaks out of this function
+        }
+        
+        // Remove detail view, and show the hidden waterfall nav
+        $('#project-detail-view').html('');
+        $('#waterfall-large').show();
+    });
+    
+    // Project Main View: Build D3 Visualization (Code Below)
+    buildWaterfallNav(allProjects);
+    
+    // Project Main View:  'Add Project'
+        // Instatiate the datepickers
+    $('#project-start-date').datepicker();
+    $('#project-due-date').datepicker();
+    
+        // Form Event Handlers
+    $('body').on('click', '#save-new-project', function() {
+        var name = $('#project-name').val();
+        var startDate = $('#project-start-date').val();
+        var dueDate = $('#project-due-date').val();
+        
+        var newProject = new Project(name, startDate, dueDate);
+        allProjects.push(newProject);
+        
+        // Remove the current waterfall and build a new one
+        buildWaterfallNav(allProjects);
+        
+        // Reset the input fields
+        $('#project-name').val('');
+        $('#project-start-date').val('');
+        $('#project-due-date').val('');
+        
+        console.log('New Project Saved!', name, startDate, dueDate);
+    });
+    
+    $('body').on('click', '#cancel-new-project', function() {
+        console.log('New Project Canceled =(');
+    });
+    
+    // Project Main View: Waterfall Navigation Handler
+    $('body').on('click', '.project-bar', function() {
+        // Get the data index and update URL hash
+        var dataIndex = $(this).attr('data-index');
+        location.hash = dataIndex;
+        
+        // Hide the waterfall nav
+        $('#waterfall-large').hide();
+    });
+    
+    // Project Detail View: Task Event Handlers
+    $('body').on('click', '.custom-checkbox', function() {
+        if ($(this).hasClass('checked')) {
+            $(this).removeClass('checked');
+            $(this).next().removeClass('strike-through');
+        } else {
+            $(this).addClass('checked');
+            $(this).next().addClass('strike-through');
+        }
+        // Now perform a sort and move the checked tasks to bottom
+    });
+    
+    $('body').on('click', '.task', function() {
+        $('.task').removeClass('active-task');
+        $(this).addClass('active-task');
+        // Give me the task data index
+        // render the relevant notes
+    });
+    
+    // Adding Tasks Event handlers
+    $('body').on('click', '.add-task-button', function() {
+        $('.add-task-container').show();
+        $('.add-task-input').focus();
+    });
+    
+    $('body').on('keypress focusout', '.add-task-input', function(e) {
+        var hash = location.hash.substring(1);
+        var content;
+        var newTask;
+        
+        if ((e.which === 13) || (e.type === 'focusout')) {
+            content = $(this).val();
+            // Reset the input field & Hide textarea
+            $(this).val('');
+            $(this).parent().hide();
+            
+            // Then, if there is actually content we save it
+            if (content.length > 0) {
+                newTask = new Task(content,[]);
+                allProjects[hash].stages[0].tasks.push(newTask);
+                $('#project-detail-view').html(renderProjectDetailsTemplate(allProjects[hash]));
+            // allProjects[hash].stages[currentStage].tasks[currentTask].notes[].push(newNote);
+            }
+        }
+    });
+    
+    // Project Detail View: Adding Notes Event handlers
+    $('body').on('click', '.add-note-button', function() {
+        $('.add-note-container').show();
+        $('.add-note-input').focus();
+    });
+    
+    $('body').on('keypress focusout', '.add-note-input', function(e) {
+        var hash = location.hash.substring(1);
+        var content;
+        var newNote;
+        
+        if ((e.which === 13) || (e.type === 'focusout')) {
+            content = $(this).val();
+            // Reset the input field & Hide textarea
+            $(this).val('');
+            $(this).parent().hide();
+            
+            // Then, if there is actually content we save it
+            if (content.length > 0) {
+                newNote = new Note(content);
+                allProjects[hash].stages[0].tasks[0].notes.push(newNote);
+                $('#project-detail-view').html(renderProjectDetailsTemplate(allProjects[hash]));
+            // allProjects[hash].stages[currentStage].tasks[currentTask].notes[].push(newNote);
+            }
+        }
+    });
+    
+}); // End Ready
