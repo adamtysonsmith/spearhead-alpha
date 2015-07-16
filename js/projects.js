@@ -5,35 +5,43 @@ var allProjects = [];
 
 var firstNote = new Note('This is your first note!');
 var firstTask = new Task('This is your first task', [firstNote]);
+var secondNote = new Note('This is your second note!');
+var secondTask = new Task('This is your second task', [secondNote]);
+
 var stageOne = new Stage('Stage 1', [firstTask]);
-var defaultProject = new Project('Example Project','07/01/2015','07/30/2015', [stageOne]);
+var stageTwo = new Stage('Stage 2', [secondTask]);
+var defaultProject = new Project('Example Project','07/01/2015','07/30/2015', [stageOne, stageTwo]);
 
 allProjects.push(defaultProject);
 
 
-// Compile Handlebars Template
-var projectDetailsTemplate = $('#project-detail-view-template').text();
-var renderProjectDetailsTemplate = Handlebars.compile(projectDetailsTemplate);
+// Compile Handlebars Templates
+var projectInfoTemplate = $('#project-info-template').text();
+var tasksTemplate = $('#tasks-template').text();
+var notesTemplate = $('#notes-template').text();
+
+var renderProjectInfoTemplate = Handlebars.compile(projectInfoTemplate);
+var renderTasksTemplate = Handlebars.compile(tasksTemplate);
+var renderNotesTemplate = Handlebars.compile(notesTemplate);
+
+var renderProjectTemplates = function(project, stage, task) {
+    
+    console.log('Triggered Render templates');
+    $('.project-info').html(renderProjectInfoTemplate(project));
+    
+    // Nuke and repave Pipeline
+    $('.pipeline-container').html('');
+    initPipeline();
+    drawPipeline(project.stages);
+    
+    $('.tasks-container').html(renderTasksTemplate(stage));
+    $('.notes-container').html(renderNotesTemplate(task));
+}
 
 
 ///////////////////////////////////////////////
 // D3 Waterfall Visualization
 ///////////////////////////////////////////////
-
-///////////////////////////////////////
-// Test Data 
-///////////////////////////////////////
-//var testData = [
-//    { name: 'Design Website', startDate: '2015-06-01', dueDate: '2015-07-05'},
-//    { name: 'Logo Mockup', startDate: '2015-07-01', dueDate: '2015-07-31'},
-//    { name: 'Build Plugin', startDate: '2015-07-20', dueDate: '2015-09-10'},
-//    { name: 'Write Script', startDate: '2015-07-15', dueDate: '2015-09-30'},
-//    { name: 'Redesign Database', startDate: '2015-08-15', dueDate: '2015-10-15'},
-//    { name: 'Design Website', startDate: '2015-06-01', dueDate: '2015-07-05'},
-//    { name: 'Logo Mockup', startDate: '2015-07-01', dueDate: '2015-07-31'},
-//    { name: 'Design Website', startDate: '2015-07-10', dueDate: '2015-09-25'}
-//];
-
 
 ///////////////////////////////////////
 // Visualization Variables and Scales
@@ -122,7 +130,7 @@ function drawBars(data, theGap, theTopPad, theSidePad, theBarHeight, theColorSca
 
    var bars = barGroup.append('rect')
         .classed('project-bar', true)
-        .attr('data-index', function(d, i) {
+        .attr('data-project', function(d, i) {
             return i;
         })
         .attr('rx', 3)
@@ -208,6 +216,137 @@ var buildWaterfallNav = function(data) {
 }
 
 
+///////////////////////////////////////////////
+// D3 Stage Pipeline Visualization
+///////////////////////////////////////////////
+var drawPipeline;
+
+var initPipeline = function() {
+    // Layout variables
+    var width = 1000;
+    var height = 100;
+    //var sidePadding = 0;
+    //var topPadding = 0;
+
+    // Create a selection for the svgContainer
+    var svgPipelineContainer = d3.selectAll('.pipeline-container').append('svg')
+        .attr('width', '100%')
+        .attr('height', '100%')
+        .attr('viewBox', '0 0 ' + width + ' ' + height)
+        .attr('preserveAspectRatio','xMidYMid')
+        .attr("class", "project-pipeline");
+    
+    // Create a color scale
+    var pipelineColorScale = d3.scale.linear()
+        .domain([0, 10])
+        .range(['#1199BF', '#12BF25'])
+        .interpolate(d3.interpolateHcl);
+    
+    drawPipeline = function(data) {
+        // Append our polygon groups and specify data to be entered
+        var polyGroup = svgPipelineContainer.append('g')
+            .classed('stage-item-group', true)
+            .selectAll('polygon')
+            .data(data)
+            .enter();
+        
+        var polys = polyGroup.insert('polygon', ':first-child')
+            .classed('stage-item', true)
+            .style('stroke','white')
+            .style('stroke-width', 2)
+            .style('fill', function(d, i) {
+                return d3.rgb(pipelineColorScale(i));
+            })
+            .attr('points', function(d, i) {
+                var points = [[0,0],[150,0],[170,30],[150,60],[0,60]];
+                
+                if (i === 0) {
+                    return points.join(' ');
+                } else {
+                    points[0][0] += 150;
+                    points[1][0] += 150;
+                    points[2][0] += 150;
+                    points[3][0] += 150;
+                    points[4][0] += 150;
+                }
+                
+                return points.join(' ');
+            })
+            .attr('data-stage', function(d, i) {
+                return i;
+            });
+            
+            var polyText = polyGroup.append('text')
+                .classed('stage-text',true)
+                .attr('font-size','18')
+                .attr('fill','white')
+                .attr('y', 35)
+                .attr('x', function(d, i) {
+                    var x = 20;
+                    if (i === 0) {
+                        return x;
+                    } else {
+                        x += 170;
+                    }
+                    return x;
+                })
+                .text(function(d) {
+                    return d.name;
+                });
+        
+            // Event Handlers on Polygons
+            polys.on('mouseover', function() {
+                var self = d3.select(this);
+                var currentFill = self.style('fill');
+
+                self.style('fill', function(){
+                    return d3.rgb(currentFill).darker(1);
+                });
+            }).on('mouseout', function() {
+                var self = d3.select(this);
+                var currentFill = self.style('fill');
+
+                self.style('fill', function(){
+                    return d3.rgb(currentFill).brighter(1);
+                });
+            }).on('click', function(d, i) {
+                var index = i;
+                var self = d3.select(this);
+                var currentColor;
+                var x1 = 0;
+                var x2 = 150;
+                var stroke = 'black';
+                
+                // Remove all lines
+                d3.selectAll('.active-stage').remove();
+                
+                // Add line under this polygon
+                d3.selectAll('.stage-item-group').append('line', '.stage-item-group')
+                    .classed('active-stage', true)
+                    .attr('y1', '70')
+                    .attr('y2', '70')
+                    .style('stroke-width', 6)
+                    .style('stroke', stroke)
+                    .attr('x1', function() {
+                        if (index === 0) {
+                            return x1;
+                        } else {
+                            x1 = x1 + index * 150;
+                            return x1;
+                        }
+                    })
+                    .attr('x2', function() {
+                        if (index === 0) {
+                            return x2;
+                        } else {
+                            x2 = x2 + index * 150;
+                            return x2;
+                        }
+                    });
+            });
+
+    } // End drawPipeline()
+} // End initPipleline Function
 
 
 
@@ -221,58 +360,82 @@ $(document).ready(function() {
     // Initializations
     //////////////////////////////////////////
     location.hash = '#';
-    buildWaterfallNav(allProjects);
+//    var hash = location.hash.split('/');
+//    var projectIndex = hash[0].slice(9);
+//    var stageIndex = hash[1].slice(6);
+//    var taskIndex = hash[2].slice(5);
     
+    buildWaterfallNav(allProjects);
+    initPipeline();
     
     //////////////////////////////////////////
     // Navigation
     //////////////////////////////////////////
     
     // Navigation: Waterfall Bars
+    // #project=[index]/stage=0/task=0
     $('body').on('click', '.project-bar', function() {
-        var projectIndex = $(this).attr('data-index');
-        location.hash = projectIndex;
+        var projectIndex = $(this).attr('data-project');
+        location.hash = 'project=' + projectIndex + '/stage=0/task=0';
     });
     
     // Navigation: Project Stages
-    $('body').on('click', '.project-bar', function() {
-//        // Get the data index and update URL hash
-//        var dataIndex = $(this).attr('data-index');
-//        location.hash = dataIndex;
+    // #project=1/stage=[index]/task=0
+    $('body').on('click', '.stage-item', function() {
+        var stageIndex = $(this).attr('data-stage');
+        console.log('Stage index is', stageIndex);
+        var currentHash = location.hash.split('/');
+        currentHash[1] = 'stage=' + stageIndex;
+        location.hash = currentHash.join('/');
     });
-    
+
     // Navigation: Project Tasks
-    $('body').on('click', '.project-bar', function() {
-//        // Get the data index and update URL hash
-//        var dataIndex = $(this).attr('data-index');
-//        location.hash = dataIndex;
+    // #project=1/stage=2/task=[index]
+    $('body').on('click', '.task', function() {
+        var taskIndex = $(this).attr('data-task');
+        console.log('Task index is', taskIndex);
+        var currentHash = location.hash.split('/');
+        currentHash[2] = 'task=' + taskIndex;
+        location.hash = currentHash.join('/');
     });
     
     // Hash Change Logic
     $(window).on('hashchange', function(e) {
-        var projectIndex = location.hash.substring(1);
-        var stageIndex;
-        var taskIndex;
-            
-        console.log(projectIndex);
+        // Create our hash array
+        var hash = location.hash.split('/');
+        var projectIndex = hash.length > 2 ? hash[0].slice(9) : null;
+        var stageIndex = hash.length > 2 ? hash[1].slice(6) : null;
+        var taskIndex = hash.length > 2 ? hash[2].slice(5) : null;
         
-        if (projectIndex >= 0 && projectIndex !== '') {
-        // If hash is #project=123 (You are showing the project details)
-            // Hide waterfall and render detail template
+        console.log('Full hash is', hash);
+        console.log('Project Index is', projectIndex);
+        console.log('Stage Index is', stageIndex);
+        console.log('Task Index is', taskIndex);
+        // projectIndex >= 0 && projectIndex !== ''
+        
+        if (projectIndex >= 0 && projectIndex !== '' && projectIndex !== null) {
+            // If hash is #project=[index]/stage=0/task=0 (You are showing the project details)
+            // Hide waterfall and render detail templates
+            console.log('Triggered Project Index', hash);
             $('#waterfall-large').hide();
-            return $('#project-detail-view').html(renderProjectDetailsTemplate(allProjects[projectIndex]));
-            // Breaks out of this function
-        //} else if () {
-        // If hash is #project=123/#stage=10 (You are showing the tasks for the stage)
-        //} else if () {
-        // If hash is #123/#stage=10/#task=20 (You are showing the notes for the task)
+            renderProjectTemplates(
+                allProjects[projectIndex], 
+                allProjects[projectIndex].stages[stageIndex],
+                allProjects[projectIndex].stages[stageIndex].tasks[taskIndex]
+            );
         }  else {
-        // If hash is # (You are showing the waterfall nav)
-            // Remove detail view, and show the hidden waterfall nav
-            $('#project-detail-view').html('');
+            // If hash is # (You are showing the waterfall nav)
+            console.log('Triggered Empty Hash', hash);
+            // Empty our templates
+            $('.project-info').html('');
+            $('.pipeline-container').html('');
+            $('.tasks-container').html('');
+            $('.notes-container').html('');
+            
             $('#waterfall-large').show();
         }
     });
+    
     
     
     //////////////////////////////////////////
@@ -288,7 +451,7 @@ $(document).ready(function() {
         var startDate = $('#project-start-date').val();
         var dueDate = $('#project-due-date').val();
         
-        var newProject = new Project(name, startDate, dueDate);
+        var newProject = new Project(name, startDate, dueDate, [stageOne, stageTwo]);
         allProjects.push(newProject);
         
         // Remove the current waterfall and build a new one
@@ -312,20 +475,6 @@ $(document).ready(function() {
     // Project Detail View
     //////////////////////////////////////////
     
-    // Project Detail View: Stage Hover & Active
-    $('body').on('mouseover', '.stage-item-group', function() {
-        $(this).find('.stage-item').hide();
-    }).on('mouseleave', '.stage-item-group', function() {
-        $(this).find('.stage-item').show();
-    });
-    
-    $('body').on('click', '.stage-item-group', function() {
-        console.log('Should be active');
-        $('.stage-item-active').css('stroke','white');
-        var underlineColor = $(this).find('.stage-item').css('fill');
-        $(this).find('.stage-item-active').css('stroke', underlineColor);
-    });
-    
     // Project Detail View: Task Checkbox
     $('body').on('click', '.custom-checkbox', function() {
         if ($(this).hasClass('checked')) {
@@ -342,8 +491,7 @@ $(document).ready(function() {
     $('body').on('click', '.task', function() {
         $('.task').removeClass('active-task');
         $(this).addClass('active-task');
-        // Give me the task data index
-        // render the relevant notes
+        // Not working
     });
     
     // Project Detail View: Add Tasks
@@ -353,7 +501,11 @@ $(document).ready(function() {
     });
     
     $('body').on('keypress focusout', '.add-task-input', function(e) {
-        var hash = location.hash.substring(1);
+        var hash = location.hash.split('/');
+        var projectIndex = hash[0].slice(9);
+        var stageIndex = hash[1].slice(6);
+        var taskIndex = hash[2].slice(5);
+        
         var content;
         var newTask;
         
@@ -366,9 +518,12 @@ $(document).ready(function() {
             // Then, if there is actually content we save it
             if (content.length > 0) {
                 newTask = new Task(content,[]);
-                allProjects[hash].stages[0].tasks.push(newTask);
-                $('#project-detail-view').html(renderProjectDetailsTemplate(allProjects[hash]));
-                // allProjects[hash].stages[currentStage].tasks[currentTask].notes[].push(newNote);
+                allProjects[projectIndex].stages[stageIndex].tasks.push(newTask);
+                renderProjectTemplates(
+                    allProjects[projectIndex], 
+                    allProjects[projectIndex].stages[stageIndex],
+                    allProjects[projectIndex].stages[stageIndex].tasks[taskIndex]
+                );
             }
         }
     });
@@ -380,7 +535,11 @@ $(document).ready(function() {
     });
     
     $('body').on('keypress focusout', '.add-note-input', function(e) {
-        var hash = location.hash.substring(1);
+        var hash = location.hash.split('/');
+        var projectIndex = hash[0].slice(9);
+        var stageIndex = hash[1].slice(6);
+        var taskIndex = hash[2].slice(5);
+        
         var content;
         var newNote;
         
@@ -393,9 +552,12 @@ $(document).ready(function() {
             // Then, if there is actually content we save it
             if (content.length > 0) {
                 newNote = new Note(content);
-                allProjects[hash].stages[0].tasks[0].notes.push(newNote);
-                $('#project-detail-view').html(renderProjectDetailsTemplate(allProjects[hash]));
-            // allProjects[hash].stages[currentStage].tasks[currentTask].notes[].push(newNote);
+                allProjects[projectIndex].stages[stageIndex].tasks[taskIndex].notes.push(newNote);
+                renderProjectTemplates(
+                    allProjects[projectIndex], 
+                    allProjects[projectIndex].stages[stageIndex],
+                    allProjects[projectIndex].stages[stageIndex].tasks[taskIndex]
+                );
             }
         }
     });

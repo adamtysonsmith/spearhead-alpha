@@ -53,6 +53,12 @@
                 </div>
                 <div id="project-detail-view">
                     <!-- Handlebars Templating Here -->
+                    <div class="project-info"><!-- Project Info Template --></div>
+                    <div class="pipeline-container"><!-- D3 Pipeline --></div>
+                    <div class="container-fluid full-height">
+                        <div class="tasks-container"><!-- Tasks Template --></div>
+                        <div class="notes-container"><!-- Notes Template --></div>
+                    </div>
                 </div>
             </div>
        </div> <!-- End Row -->
@@ -92,60 +98,23 @@
         </div>
     </div>
     
-    <!-- Project Detail View Template -->
-    <script id="project-detail-view-template" type="text/x-handlebars-template">
-        <h2>{{name}}</h2>
-        <p>Start Date: {{startDate}}</p>
-        <p>Due Date: {{dueDate}}</p>
-        <button class="btn btn-warning" data-toggle="modal" data-target="#newPhaseModal">+ Add Phase</button>
-        <div class="pipeline-container">
-            <svg class="project-pipeline" height="100" width="1000">
-                <g class="stage-item-group">
-                    <!-- Sixth -->
-                    <polygon class="stage-item-hover" points="750,0 900,0 920,30 900,60 750,60" style="fill: #02915a; stroke: white; stroke-width: 2" />
-                    <polygon class="stage-item" points="750,0 900,0 920,30 900,60 750,60" style="fill: #00bb73; stroke: white; stroke-width: 2" />
-                    <text class="stage-text" x="790" y="35" font-size="18" fill="white">{{!stages.0.name}}6th</text>
-                    <line class="stage-item-active" x1="750" y1="70" x2="900" y2="70" style="stroke: white; stroke-width: 6" />
-                </g>
-                <g class="stage-item-group">
-                    <!-- Fifth -->
-                    <polygon class="stage-item-hover" points="600,0 750,0 770,30 750,60 600,60" style="fill: #028b6c; stroke: white; stroke-width: 2" /> 
-                    <polygon class="stage-item" points="600,0 750,0 770,30 750,60 600,60" style="fill: #00b88f; stroke: white; stroke-width: 2" /> 
-                    <text class="stage-text" x="640" y="35" font-size="18" fill="white">{{!stages.0.name}}5th</text>
-                    <line class="stage-item-active" x1="600" y1="70" x2="750" y2="70" style="stroke: white; stroke-width: 6" />
-                </g>
-                <g class="stage-item-group">
-                    <!-- Fourth -->
-                    <polygon class="stage-item-hover" points="450,0 600,0 620,30 600,60 450,60" style="fill: #01897f; stroke: white; stroke-width: 2" /> 
-                    <polygon class="stage-item" points="450,0 600,0 620,30 600,60 450,60" style="fill: #00b3a5; stroke: white; stroke-width: 2" /> 
-                    <text class="stage-text" x="490" y="35" font-size="18" fill="white">{{!stages.0.name}}4th</text>
-                    <line class="stage-item-active" x1="450" y1="70" x2="600" y2="70" style="stroke: white; stroke-width: 6" />
-                </g>
-                <g class="stage-item-group">
-                    <!-- Third -->
-                    <polygon class="stage-item-hover" points="300,0 450,0 470,30 450,60 300,60" style="fill: #017f84; stroke: white; stroke-width: 2" /> 
-                    <polygon class="stage-item" points="300,0 450,0 470,30 450,60 300,60" style="fill: #00acb4; stroke: white; stroke-width: 2" /> 
-                    <text class="stage-text" x="340" y="35" font-size="18" fill="white">{{!stages.0.name}}3rd</text>
-                    <line class="stage-item-active" x1="300" y1="70" x2="450" y2="70" style="stroke: white; stroke-width: 6" />
-                </g>
-                <g class="stage-item-group">
-                    <!-- Second -->
-                    <polygon class="stage-item-hover" points="150,0 300,0 320,30 300,60 150,60" style="fill: #028496; stroke: white; stroke-width: 2" /> 
-                    <polygon class="stage-item" points="150,0 300,0 320,30 300,60 150,60" style="fill: #00a8bf; stroke: white; stroke-width: 2" /> 
-                    <text class="stage-text" x="190" y="35" font-size="18" fill="white">{{!stages.0.name}}2nd</text>
-                    <line class="stage-item-active" x1="150" y1="70" x2="300" y2="70" style="stroke: white; stroke-width: 6" />
-                </g>
-                <g class="stage-item-group">
-                    <!-- First -->
-                    <polygon class="stage-item-hover" points="0,0   150,0 170,30 150,60 0,60"   style="fill: #027e98; stroke: white; stroke-width: 2" /> 
-                    <polygon class="stage-item" points="0,0   150,0 170,30 150,60 0,60"   style="fill: #00a1c2; stroke: white; stroke-width: 2" /> 
-                    <text class="stage-text" x="20" y="35" font-size="18" fill="white">{{!stages.0.name}}Text 1</text>
-                    <line class="stage-item-active" x1="0" y1="70" x2="150" y2="70" style="stroke: white; stroke-width: 6" />
-                </g>
-            </svg>
-        </div>
-        <div class="container-fluid full-height">
-            <div class="tasks-container">
+    
+    
+    <!-- Begin Handlebars Templates (3) -->
+    
+    <!-- Project Info Template -->
+    <script id="project-info-template" type="text/x-handlebars-template">
+       {{! Pass in the project }}
+            <h2>{{name}}</h2>
+            <p>Start Date: {{startDate}}</p>
+            <p>Due Date: {{dueDate}}</p>
+            <button class="btn btn-warning" data-toggle="modal" data-target="#newPhaseModal">+ Add Phase</button>
+    </script>
+    
+    <!-- Tasks Template -->
+    <script id="tasks-template" type="text/x-handlebars-template">
+        {{! Pass in the project.stages.tasks }}
+        <div class="tasks-container">
                 <div class="col-xs-12 col-md-6 border-right-gray">
                     <h3 class="tasks-title">Tasks</h3><button class="add-task-button btn btn-warning">+ Add Task</button>
                     <div class="add-task-container">
@@ -153,8 +122,8 @@
                         <textarea class="form-control add-task-input" type="text" placeholder="Add a new task for this stage.."></textarea>
                     </div>
                     <div class="task-group">
-                       {{#each stages.0.tasks}}
-                        <div class="task">
+                       {{#each tasks}}
+                        <div class="task" data-task="{{@index}}">
                             <input id="check1" type="checkbox" name="check1" value="check1">
                             <label class="custom-checkbox" for="check1"></label>
                             <span class="task-name">{{content}}</span>
@@ -163,24 +132,29 @@
                     </div>
                 </div>
             </div>
-            <div class="notes-container">
-                <div class="col-xs-12 col-md-6">
-                    <h3 class="notes-title">Notes</h3><button class="add-note-button btn btn-warning">+ Add Note</button>
-                    <div class="add-note-container">
-                        <!-- Note will be added when keying enter or clicking off -->
-                        <textarea class="form-control add-note-input" type="text" placeholder="Add a note for this task.."></textarea>
-                    </div>
-                    {{#each stages.0.tasks.0.notes}}
-                    <div class="note">
-                        <!-- Note can be edited in place -->
-                        <h5 class="note-date">{{timestamp}}</h5>
-                        <p class="note-content">{{content}}</p>
-                    </div>
-                    {{/each}}
+    </script>
+    
+    <!-- Notes Template -->
+    <script id="notes-template" type="text/x-handlebars-template">
+        {{! Pass in the project.stages.tasks.notes }}
+        <div class="notes-container">
+            <div class="col-xs-12 col-md-6">
+                <h3 class="notes-title">Notes</h3><button class="add-note-button btn btn-warning">+ Add Note</button>
+                <div class="add-note-container">
+                    <!-- Note will be added when keying enter or clicking off -->
+                    <textarea class="form-control add-note-input" type="text" placeholder="Add a note for this task.."></textarea>
                 </div>
+                {{#each notes}}
+                <div class="note">
+                    <!-- Note can be edited in place -->
+                    <h5 class="note-date">{{timestamp}}</h5>
+                    <p class="note-content">{{content}}</p>
+                </div>
+                {{/each}}
             </div>
         </div>
     </script>
+    
     
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/lodash/3.9.3/lodash.min.js"></script>
