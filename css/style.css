@@ -183,6 +183,13 @@ html, body {
     margin-bottom: 30px;
 }
 
+polygon.stage-item:hover {
+    border-bottom: 5px solid aqua;
+}
+polygon.stage-item.hidden {
+/*    display: none;*/
+}
+
 /**********************************/
 /** Custom Checkboxes **/
 /**********************************/

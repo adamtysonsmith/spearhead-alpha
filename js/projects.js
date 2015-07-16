@@ -23,16 +23,16 @@ var renderProjectDetailsTemplate = Handlebars.compile(projectDetailsTemplate);
 ///////////////////////////////////////
 // Test Data 
 ///////////////////////////////////////
-var testData = [
-    { name: 'Design Website', startDate: '2015-06-01', dueDate: '2015-07-05'},
-    { name: 'Logo Mockup', startDate: '2015-07-01', dueDate: '2015-07-31'},
-    { name: 'Build Plugin', startDate: '2015-07-20', dueDate: '2015-09-10'},
-    { name: 'Write Script', startDate: '2015-07-15', dueDate: '2015-09-30'},
-    { name: 'Redesign Database', startDate: '2015-08-15', dueDate: '2015-10-15'},
-    { name: 'Design Website', startDate: '2015-06-01', dueDate: '2015-07-05'},
-    { name: 'Logo Mockup', startDate: '2015-07-01', dueDate: '2015-07-31'},
-    { name: 'Design Website', startDate: '2015-07-10', dueDate: '2015-09-25'}
-];
+//var testData = [
+//    { name: 'Design Website', startDate: '2015-06-01', dueDate: '2015-07-05'},
+//    { name: 'Logo Mockup', startDate: '2015-07-01', dueDate: '2015-07-31'},
+//    { name: 'Build Plugin', startDate: '2015-07-20', dueDate: '2015-09-10'},
+//    { name: 'Write Script', startDate: '2015-07-15', dueDate: '2015-09-30'},
+//    { name: 'Redesign Database', startDate: '2015-08-15', dueDate: '2015-10-15'},
+//    { name: 'Design Website', startDate: '2015-06-01', dueDate: '2015-07-05'},
+//    { name: 'Logo Mockup', startDate: '2015-07-01', dueDate: '2015-07-31'},
+//    { name: 'Design Website', startDate: '2015-07-10', dueDate: '2015-09-25'}
+//];
 
 
 ///////////////////////////////////////
@@ -58,10 +58,10 @@ var dateFormat = d3.time.format('%Y-%m-%d');
 var timeFormat = d3.time.format('%b %e, %Y');
 
 // Return minimum and maximum dates
-var min = d3.min(allProjects, function(d) { 
+var min = d3.min(allProjects, function(d) {
     return dateFormat.parse(d.startDate);
 });
-var max = d3.max(allProjects, function(d) { 
+var max = d3.max(allProjects, function(d) {
     return dateFormat.parse(d.dueDate);
 });
 
@@ -217,33 +217,72 @@ var buildWaterfallNav = function(data) {
 ///////////////////////////////////////////////
 
 $(document).ready(function() {
-    // Reset the hash on refresh
+    //////////////////////////////////////////
+    // Initializations
+    //////////////////////////////////////////
     location.hash = '#';
-    
-    $(window).on('hashchange', function(e) {
-        var hash = location.hash.substring(1);
-        console.log(hash);
-        // render the relevant template by passing in allProjects[hash]
-        if (hash >= 0 && hash !== '') {
-            console.log('Triggered Template');
-            return $('#project-detail-view').html(renderProjectDetailsTemplate(allProjects[hash]));
-            // Breaks out of this function
-        }
-        
-        // Remove detail view, and show the hidden waterfall nav
-        $('#project-detail-view').html('');
-        $('#waterfall-large').show();
-    });
-    
-    // Project Main View: Build D3 Visualization (Code Below)
     buildWaterfallNav(allProjects);
     
+    
+    //////////////////////////////////////////
+    // Navigation
+    //////////////////////////////////////////
+    
+    // Navigation: Waterfall Bars
+    $('body').on('click', '.project-bar', function() {
+        var projectIndex = $(this).attr('data-index');
+        location.hash = projectIndex;
+    });
+    
+    // Navigation: Project Stages
+    $('body').on('click', '.project-bar', function() {
+//        // Get the data index and update URL hash
+//        var dataIndex = $(this).attr('data-index');
+//        location.hash = dataIndex;
+    });
+    
+    // Navigation: Project Tasks
+    $('body').on('click', '.project-bar', function() {
+//        // Get the data index and update URL hash
+//        var dataIndex = $(this).attr('data-index');
+//        location.hash = dataIndex;
+    });
+    
+    // Hash Change Logic
+    $(window).on('hashchange', function(e) {
+        var projectIndex = location.hash.substring(1);
+        var stageIndex;
+        var taskIndex;
+            
+        console.log(projectIndex);
+        
+        if (projectIndex >= 0 && projectIndex !== '') {
+        // If hash is #project=123 (You are showing the project details)
+            // Hide waterfall and render detail template
+            $('#waterfall-large').hide();
+            return $('#project-detail-view').html(renderProjectDetailsTemplate(allProjects[projectIndex]));
+            // Breaks out of this function
+        //} else if () {
+        // If hash is #project=123/#stage=10 (You are showing the tasks for the stage)
+        //} else if () {
+        // If hash is #123/#stage=10/#task=20 (You are showing the notes for the task)
+        }  else {
+        // If hash is # (You are showing the waterfall nav)
+            // Remove detail view, and show the hidden waterfall nav
+            $('#project-detail-view').html('');
+            $('#waterfall-large').show();
+        }
+    });
+    
+    
+    //////////////////////////////////////////
+    // Project Main View
+    //////////////////////////////////////////
+    
     // Project Main View:  'Add Project'
-        // Instatiate the datepickers
     $('#project-start-date').datepicker();
     $('#project-due-date').datepicker();
     
-        // Form Event Handlers
     $('body').on('click', '#save-new-project', function() {
         var name = $('#project-name').val();
         var startDate = $('#project-start-date').val();
@@ -263,21 +302,31 @@ $(document).ready(function() {
         console.log('New Project Saved!', name, startDate, dueDate);
     });
     
+    // Project Main View:  'Cancel Project'
     $('body').on('click', '#cancel-new-project', function() {
         console.log('New Project Canceled =(');
     });
     
-    // Project Main View: Waterfall Navigation Handler
-    $('body').on('click', '.project-bar', function() {
-        // Get the data index and update URL hash
-        var dataIndex = $(this).attr('data-index');
-        location.hash = dataIndex;
-        
-        // Hide the waterfall nav
-        $('#waterfall-large').hide();
+    
+    //////////////////////////////////////////
+    // Project Detail View
+    //////////////////////////////////////////
+    
+    // Project Detail View: Stage Hover & Active
+    $('body').on('mouseover', '.stage-item-group', function() {
+        $(this).find('.stage-item').hide();
+    }).on('mouseleave', '.stage-item-group', function() {
+        $(this).find('.stage-item').show();
     });
     
-    // Project Detail View: Task Event Handlers
+    $('body').on('click', '.stage-item-group', function() {
+        console.log('Should be active');
+        $('.stage-item-active').css('stroke','white');
+        var underlineColor = $(this).find('.stage-item').css('fill');
+        $(this).find('.stage-item-active').css('stroke', underlineColor);
+    });
+    
+    // Project Detail View: Task Checkbox
     $('body').on('click', '.custom-checkbox', function() {
         if ($(this).hasClass('checked')) {
             $(this).removeClass('checked');
@@ -289,6 +338,7 @@ $(document).ready(function() {
         // Now perform a sort and move the checked tasks to bottom
     });
     
+    // Project Detail View: Active Task Highlight
     $('body').on('click', '.task', function() {
         $('.task').removeClass('active-task');
         $(this).addClass('active-task');
@@ -296,7 +346,7 @@ $(document).ready(function() {
         // render the relevant notes
     });
     
-    // Adding Tasks Event handlers
+    // Project Detail View: Add Tasks
     $('body').on('click', '.add-task-button', function() {
         $('.add-task-container').show();
         $('.add-task-input').focus();
@@ -318,12 +368,12 @@ $(document).ready(function() {
                 newTask = new Task(content,[]);
                 allProjects[hash].stages[0].tasks.push(newTask);
                 $('#project-detail-view').html(renderProjectDetailsTemplate(allProjects[hash]));
-            // allProjects[hash].stages[currentStage].tasks[currentTask].notes[].push(newNote);
+                // allProjects[hash].stages[currentStage].tasks[currentTask].notes[].push(newNote);
             }
         }
     });
     
-    // Project Detail View: Adding Notes Event handlers
+    // Project Detail View: Add Notes
     $('body').on('click', '.add-note-button', function() {
         $('.add-note-container').show();
         $('.add-note-input').focus();

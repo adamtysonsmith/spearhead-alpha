@@ -100,18 +100,48 @@
         <button class="btn btn-warning" data-toggle="modal" data-target="#newPhaseModal">+ Add Phase</button>
         <div class="pipeline-container">
             <svg class="project-pipeline" height="100" width="1000">
-                <polygon points="750,0 900,0 920,30 900,60 750,60" style="fill: #00bb73; stroke: white; stroke-width: 2" />
-                <polygon points="600,0 750,0 770,30 750,60 600,60" style="fill: #00b88f; stroke: white; stroke-width: 2" /> <!-- Fifth -->
-                <polygon points="450,0 600,0 620,30 600,60 450,60" style="fill: #00b3a5; stroke: white; stroke-width: 2" /> <!-- Fourth -->
-                <polygon points="300,0 450,0 470,30 450,60 300,60" style="fill: #00acb4; stroke: white; stroke-width: 2" /> <!-- Third -->
-                <polygon points="150,0 300,0 320,30 300,60 150,60" style="fill: #00a8bf; stroke: white; stroke-width: 2" /> <!-- Second -->
-                <polygon points="0,0   150,0 170,30 150,60 0,60"   style="fill: #00a1c2; stroke: white; stroke-width: 2" /> <!-- First -->
-                <text x="20" y="35" font-size="18" fill="white">{{stages.0.name}}</text>
-                <text x="190" y="35" font-size="18" fill="white">{{stages.0.name}}</text>
-                <text x="340" y="35" font-size="18" fill="white">{{stages.0.name}}</text>
-                <text x="490" y="35" font-size="18" fill="white">{{stages.0.name}}</text>
-                <text x="640" y="35" font-size="18" fill="white">{{stages.0.name}}</text>
-                <text x="790" y="35" font-size="18" fill="white">{{stages.0.name}}</text>
+                <g class="stage-item-group">
+                    <!-- Sixth -->
+                    <polygon class="stage-item-hover" points="750,0 900,0 920,30 900,60 750,60" style="fill: #02915a; stroke: white; stroke-width: 2" />
+                    <polygon class="stage-item" points="750,0 900,0 920,30 900,60 750,60" style="fill: #00bb73; stroke: white; stroke-width: 2" />
+                    <text class="stage-text" x="790" y="35" font-size="18" fill="white">{{!stages.0.name}}6th</text>
+                    <line class="stage-item-active" x1="750" y1="70" x2="900" y2="70" style="stroke: white; stroke-width: 6" />
+                </g>
+                <g class="stage-item-group">
+                    <!-- Fifth -->
+                    <polygon class="stage-item-hover" points="600,0 750,0 770,30 750,60 600,60" style="fill: #028b6c; stroke: white; stroke-width: 2" /> 
+                    <polygon class="stage-item" points="600,0 750,0 770,30 750,60 600,60" style="fill: #00b88f; stroke: white; stroke-width: 2" /> 
+                    <text class="stage-text" x="640" y="35" font-size="18" fill="white">{{!stages.0.name}}5th</text>
+                    <line class="stage-item-active" x1="600" y1="70" x2="750" y2="70" style="stroke: white; stroke-width: 6" />
+                </g>
+                <g class="stage-item-group">
+                    <!-- Fourth -->
+                    <polygon class="stage-item-hover" points="450,0 600,0 620,30 600,60 450,60" style="fill: #01897f; stroke: white; stroke-width: 2" /> 
+                    <polygon class="stage-item" points="450,0 600,0 620,30 600,60 450,60" style="fill: #00b3a5; stroke: white; stroke-width: 2" /> 
+                    <text class="stage-text" x="490" y="35" font-size="18" fill="white">{{!stages.0.name}}4th</text>
+                    <line class="stage-item-active" x1="450" y1="70" x2="600" y2="70" style="stroke: white; stroke-width: 6" />
+                </g>
+                <g class="stage-item-group">
+                    <!-- Third -->
+                    <polygon class="stage-item-hover" points="300,0 450,0 470,30 450,60 300,60" style="fill: #017f84; stroke: white; stroke-width: 2" /> 
+                    <polygon class="stage-item" points="300,0 450,0 470,30 450,60 300,60" style="fill: #00acb4; stroke: white; stroke-width: 2" /> 
+                    <text class="stage-text" x="340" y="35" font-size="18" fill="white">{{!stages.0.name}}3rd</text>
+                    <line class="stage-item-active" x1="300" y1="70" x2="450" y2="70" style="stroke: white; stroke-width: 6" />
+                </g>
+                <g class="stage-item-group">
+                    <!-- Second -->
+                    <polygon class="stage-item-hover" points="150,0 300,0 320,30 300,60 150,60" style="fill: #028496; stroke: white; stroke-width: 2" /> 
+                    <polygon class="stage-item" points="150,0 300,0 320,30 300,60 150,60" style="fill: #00a8bf; stroke: white; stroke-width: 2" /> 
+                    <text class="stage-text" x="190" y="35" font-size="18" fill="white">{{!stages.0.name}}2nd</text>
+                    <line class="stage-item-active" x1="150" y1="70" x2="300" y2="70" style="stroke: white; stroke-width: 6" />
+                </g>
+                <g class="stage-item-group">
+                    <!-- First -->
+                    <polygon class="stage-item-hover" points="0,0   150,0 170,30 150,60 0,60"   style="fill: #027e98; stroke: white; stroke-width: 2" /> 
+                    <polygon class="stage-item" points="0,0   150,0 170,30 150,60 0,60"   style="fill: #00a1c2; stroke: white; stroke-width: 2" /> 
+                    <text class="stage-text" x="20" y="35" font-size="18" fill="white">{{!stages.0.name}}Text 1</text>
+                    <line class="stage-item-active" x1="0" y1="70" x2="150" y2="70" style="stroke: white; stroke-width: 6" />
+                </g>
             </svg>
         </div>
         <div class="container-fluid full-height">
