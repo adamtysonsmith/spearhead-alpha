@@ -5,14 +5,19 @@ var allProjects = [];
 
 var firstNote = new Note('This is your first note!');
 var firstTask = new Task('This is your first task', [firstNote]);
-var secondNote = new Note('This is your second note!');
-var secondTask = new Task('This is your second task', [secondNote]);
+var secondNote = new Note('This is another note!');
+var secondTask = new Task('This is another task', [secondNote]);
 
-var stageOne = new Stage('Stage 1', [firstTask]);
-var stageTwo = new Stage('Stage 2', [secondTask]);
-var defaultProject = new Project('Example Project','07/01/2015','07/30/2015', [stageOne, stageTwo]);
+var stageOne = new Stage('Sketch UI', [firstTask]);
+var stageTwo = new Stage('Develop CSS', [secondTask]);
+var stageOnePup = new Stage('Meet Client', [firstTask]);
+var stageTwoPup = new Stage('Get Paid', [secondTask]);
+var stageThreePup = new Stage('Design', [secondTask]);
 
-allProjects.push(defaultProject);
+var defaultProject1 = new Project('Midterm Project','07/01/2015','07/16/2015', [stageOne, stageTwo]);
+var defaultProject2 = new Project('Website Design for Pup n\' Suds','08/01/2015','08/30/2015', [stageOnePup, stageTwoPup, stageThreePup]);
+
+allProjects.push(defaultProject1, defaultProject2);
 
 
 // Compile Handlebars Templates
@@ -278,7 +283,7 @@ var initPipeline = function() {
             
             var polyText = polyGroup.append('text')
                 .classed('stage-text',true)
-                .attr('font-size','18')
+                .attr('font-size','14')
                 .attr('fill','white')
                 .attr('y', 35)
                 .attr('x', function(d, i) {
@@ -319,6 +324,7 @@ var initPipeline = function() {
                 
                 // Remove all lines
                 d3.selectAll('.active-stage').remove();
+                console.log('All lines removed');
                 
                 // Add line under this polygon
                 d3.selectAll('.stage-item-group').append('line', '.stage-item-group')
@@ -343,6 +349,7 @@ var initPipeline = function() {
                             return x2;
                         }
                     });
+                console.log('Line Added!');
             });
 
     } // End drawPipeline()
@@ -399,6 +406,7 @@ $(document).ready(function() {
         location.hash = currentHash.join('/');
     });
     
+
     // Hash Change Logic
     $(window).on('hashchange', function(e) {
         // Create our hash array
@@ -415,17 +423,32 @@ $(document).ready(function() {
         
         if (projectIndex >= 0 && projectIndex !== '' && projectIndex !== null) {
             // If hash is #project=[index]/stage=0/task=0 (You are showing the project details)
-            // Hide waterfall and render detail templates
-            console.log('Triggered Project Index', hash);
+            // Hide waterfall and render project detail templates
             $('#waterfall-large').hide();
             renderProjectTemplates(
                 allProjects[projectIndex], 
                 allProjects[projectIndex].stages[stageIndex],
                 allProjects[projectIndex].stages[stageIndex].tasks[taskIndex]
             );
+
+            // Update Active task highlighting based on hash
+            $('.task').each(function(index, value){
+                if(index == taskIndex) {
+                    $(this).css('background-color', 'rgb(255, 223, 163)');
+                }
+            });
+            
+            // Update Active stage highlighting based on hash
+            $('.stage-item').each(function(index, value){
+                if(index == stageIndex) {
+                    // Works - Need to think about how to add line
+                    // $(this).append('fill', 'cadetblue');
+                }
+            });
+            
+            
         }  else {
             // If hash is # (You are showing the waterfall nav)
-            console.log('Triggered Empty Hash', hash);
             // Empty our templates
             $('.project-info').html('');
             $('.pipeline-container').html('');
@@ -520,11 +543,11 @@ $(document).ready(function() {
     });
     
     // Project Detail View: Active Task Highlight
-    $('body').on('click', '.task', function() {
-        $('.task').removeClass('active-task');
-        $(this).addClass('active-task');
-        // Not working
-    });
+//    $('body').on('click', '.task', function() {
+//        $('.task').removeClass('active-task');
+//        $(this).addClass('active-task');
+//        // Not working
+//    });
     
     // Project Detail View: Add Tasks
     $('body').on('click', '.add-task-button', function() {

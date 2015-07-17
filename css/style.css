@@ -171,7 +171,6 @@ html, body {
     margin-left: 15px;
     font-size: 18px;
 }
-
 .note {
     padding: 15px;
     background-color: #f0f0f0;
@@ -192,6 +191,15 @@ polygon.stage-item:hover {
 polygon.stage-item.hidden {
 /*    display: none;*/
 }
+/*
+.pipeline-active {
+    position: absolute;
+    bottom: 205px;
+}
+.stage-item-active {
+
+}
+*/
 
 /**********************************/
 /** Custom Checkboxes **/
